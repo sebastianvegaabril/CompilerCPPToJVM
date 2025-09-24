@@ -4,7 +4,7 @@
 
 scripts\build.bat
 
-## Ejecutar todos los tests (Hay que estar parado en el directorio scripts)
+## Ejecutar todos los tests (Hay que estar parado en el directorio \tests\scripts)
 
 tests\scripts\run_tests.bat
 
