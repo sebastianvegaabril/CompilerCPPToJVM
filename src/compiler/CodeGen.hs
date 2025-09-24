@@ -133,27 +133,27 @@ compileProgram :: Program -> State CodeGenState ()
 compileProgram (PDefs definitions) = do
   state <- get
   let className = cgsClassName state
-  -- Register all function signatures first
+
   mapM_
     (\def ->
        let (name, sig) = extractFunctionSignature def
         in registerFunction name sig)
     definitions
-  -- Emit class header
+
   emit $ ".class public " ++ className
   emit $ ".super java/lang/Object"
   emit ""
-  -- Emit default constructor
+
   emit $ ".method public <init>()V"
   emit "  aload_0"
   emit "  invokenonvirtual java/lang/Object/<init>()V"
   emit "  return"
   emit ".end method"
   emit ""
-  -- Compile all definitions
+
   mapM_ compileDefinition definitions
 
--- | Compile function definition
+
 compileDefinition :: Def -> State CodeGenState ()
 compileDefinition (DFun returnType (Id methodName) args body) = do
   modify $ \state -> state {cgsVarIndices = Map.empty, cgsNextIndex = 0}
