@@ -1,0 +1,25 @@
+# Archivos compilados de Haskell
+*.hi
+*.o
+*.exe
+
+# Directorio de build
+build/
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# Archivos del editor
+.vs/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+
+# Archivos de sistema Windows
+Thumbs.db
+Desktop.ini

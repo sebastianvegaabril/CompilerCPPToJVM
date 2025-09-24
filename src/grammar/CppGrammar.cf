@@ -1,0 +1,111 @@
+PDefs.   Program ::= [Def] ;
+rules Body ::= "{" [Stm] "}" | ";" ;
+
+DVarDecl.    Def   ::= Decl ";" ;
+DFun.        Def   ::= Type Id "(" [Arg] ")" Body;
+DInlineFun.  Def   ::= "inline" Type Id "(" [Arg] ")" Body ;
+DUsing.      Def   ::= "using" Type ";" ;
+DTypeDef.    Def   ::= TypeDef ;
+DStruct.     Def   ::= StructDef ";";
+terminator Def "" ;
+
+XDecl.      Decl  ::= Type [IdSpec] MaybeAss;
+XStruct.    StructDef ::= "struct" Id "{" [Decl] "}";
+XTypeDef.   TypeDef ::= "typedef" Type Id ";" ;
+XStructDef. TypeDef ::= "typedef" StructDef Id ";" ;
+terminator Decl ";" ;
+
+ArgType. Arg ::= Type ;
+ADecl.   Arg ::= Type Id ;
+separator Arg "," ;
+
+rules IdSpec ::= Id | Id "[" Integer "]";
+separator nonempty IdSpec "," ;
+
+SEmpty.      Stm ::= ";" ;
+SExp.        Stm ::= Exp ";" ;
+SDecls.      Stm ::= Decl ";";
+SInit.       Stm ::= Type Id "=" Exp ";" ;
+SReturn.     Stm ::= "return" Exp ";" ;
+SReturnVoid. Stm ::= "return" ";" ;
+SReturnVal.  Stm ::= "return" Exp ";" ;
+SWhile.      Stm ::= "while" "(" Exp ")" Stm ;
+SDoWhile.    Stm ::= "do" Stm "while" "(" Exp ")";
+SFor.        Stm ::= "for" "(" Decl ";" Exp ";" Exp ")" Stm ; -- No implementado
+SForInit.    Stm ::= "for" "(" Exp3 "=" Exp2 ";" Exp ";" Exp ")" Stm ; -- No implementado
+SBlock.      Stm ::= "{" [Stm] "}" ;
+STypeDef.    Stm ::= TypeDef ;
+SIf.         Stm ::= "if" "(" Exp ")" Stm ;
+SIfElse.     Stm ::= "if" "(" Exp ")" Stm "else" Stm ;
+SStructDef.  Stm ::= StructDef ";";
+terminator Stm "" ;
+
+ETrue.   Exp16  ::= "true" ;
+EFalse.  Exp16  ::= "false" ;
+EInt.    Exp16  ::= Integer ;
+EDouble. Exp16  ::= Double ;
+EChar.   Exp16  ::= Char ;
+EId.     Exp16  ::= [ConstantName] ; 
+EString. Exp16  ::= [String] ;
+separator nonempty String "" ;
+
+EIndex.  Exp15  ::= Exp15 "[" Exp "]" ; 
+EApp.    Exp15  ::= Exp15 "(" [Exp] ")" ;
+
+EDot.    Exp14  ::= Exp14 "." Exp15 ;
+EMember. Exp14  ::= Exp14 "->" Exp15 ;
+EPIncr.  Exp14  ::= Exp15 "++" ;
+EPDecr.  Exp14  ::= Exp15 "--" ;
+EDeref.  Exp14  ::= "*" Exp15 ;
+
+EIncr.   Exp13  ::= "++" Exp14 ;
+EDecr.   Exp13  ::= "--" Exp14 ;
+ENeg.    Exp13  ::= "!" Exp14 ;
+
+ETimes.  Exp12  ::= Exp12 "*"  Exp13 ;
+EDiv.    Exp12  ::= Exp12 "/"  Exp13 ; 
+EMod.    Exp12  ::= Exp12 "%"  Exp13 ; -- No implementado
+
+EPlus.   Exp11  ::= Exp11 "+"  Exp12 ;
+EMinus.  Exp11  ::= Exp11 "-"  Exp12 ;
+
+ELShift. Exp10  ::= Exp10 "<<" Exp11 ;
+ERShift. Exp10  ::= Exp10 ">>" Exp11 ;
+
+ELt.     Exp9   ::= Exp9 "<"  Exp10 ;
+EGt.     Exp9   ::= Exp9 ">"  Exp10 ;
+ELtEq.   Exp9   ::= Exp9 "<=" Exp10 ;
+EGtEq.   Exp9   ::= Exp9 ">=" Exp10 ;
+EEq.     Exp8   ::= Exp8 "==" Exp9 ;
+ENEq.    Exp8   ::= Exp8 "!=" Exp9 ;
+EAnd.    Exp4   ::= Exp4 "&&" Exp5 ;
+EOr.     Exp3   ::= Exp3 "||" Exp4 ;
+EAss.    Exp2   ::= Exp3 "=" Exp2 ;
+EAddAss. Exp2   ::= Exp3 "+=" Exp2 ;
+ESubAss. Exp2   ::= Exp3 "-=" Exp2 ;
+ECond.   Exp2   ::= Exp3 "?" Exp ":" Exp2 ; -- No implementado
+EThrow.  Exp1   ::= "throw" Exp2 ;
+internal ETyped. Exp16 ::= "(" Exp ":" Type ")" ;
+coercions Exp 16 ;
+separator Exp "," ;
+
+CNIdentifier.            ConstantName ::= Id ;
+separator nonempty ConstantName "::" ;
+
+Type_bool.     Type ::= "bool" ;
+Type_double.   Type ::= "double" ;
+Type_int.      Type ::= "int" ;
+Type_void.     Type ::= "void" ;
+Type_string.   Type ::= "string" ;
+Type_id.       Type ::= [ConstantName] ;
+Type_array.    Type ::= Type "[]" ;
+Type_ref.      Type ::= Type "&" ;
+Type_const.    Type ::= "const" Type ;
+separator nonempty Type "," ;
+
+token Id (letter (letter | digit | '_')*) ;
+rules MaybeAss ::= "=" Exp | ;
+
+comment "#" ;
+comment "//" ;
+comment "/*" "*/" ;
